@@ -15,12 +15,8 @@ This project combines:
 
 ## Project Structure
 The project is organized as follows:
-smart-parking-system/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── src/
-│   ├── smart_parking.py
+├── pyDataprocessing/
+│   ├── smartparking.py
 │   └── app.py
 ├── esp32/
 │   ├── platformio.ini
