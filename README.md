@@ -15,10 +15,15 @@ This project combines:
 
 ## Project Structure
 The project is organized as follows:
+smart-parking-system/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── platformio.ini
 ├── pyDataprocessing/
 │   ├── smartparking.py
 │   └── app.py
-├── esp32/
+├── esp32-cam/
 │   ├── platformio.ini
 │   ├── src/
 │   │   └── main.cpp
@@ -40,18 +45,7 @@ The project is organized as follows:
 │           └── ir.cpp
 └── docs/
 ├── demo.mp4
-├── architecture.jpg
-
-
-
-
-
-
-
-
-
-
-
+├── architecture.png
 
 - **`pyDataprocessing/`**: Directory for Python source code.
 - **`esp32-cam/`**: Directory for ESP32-CAM Arduino code and libraries.
