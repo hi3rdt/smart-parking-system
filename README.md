@@ -43,10 +43,16 @@ The project is organized as follows:
 ├── architecture.jpg
 
 
-- **`README.md`**: Project documentation and setup instructions.
-- **`requirements.txt`**: List of Python dependencies.
-- **`.gitignore`**: Files and folders to exclude from Git.
-- **`platformio.ini`**: Configuration for ESP32-CAM build environment.
+
+
+
+
+
+
+
+
+
+
 - **`pyDataprocessing/`**: Directory for Python source code.
 - **`esp32-cam/`**: Directory for ESP32-CAM Arduino code and libraries.
 - **`docs/`**: Directory for demo videos and diagrams.
