@@ -1,0 +1,8 @@
+paho-mqtt
+opencv-python
+torch
+vietocr
+ultralytics
+pymongo
+flask
+pillow

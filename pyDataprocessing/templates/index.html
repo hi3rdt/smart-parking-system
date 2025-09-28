@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Xe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .controls button.delete {
+            background-color: #f44336;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 5px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        .modal-content button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button.cancel {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>Smart Parking System</h1>
+    <div class="controls">
+        <button onclick="openAddModal()">ADD</button>
+        <button class="delete" onclick="deleteSelected()">Delete</button>
+    </div>
+    <table id="vehicleTable">
+        <tr>
+            <th>Plate Number</th>
+            <th>State(Entry/Exit)</th>
+            <th>Time (In/Out)</th>
+            <th>Select</th>
+        </tr>
+    </table>
+
+    <!-- Modal để thêm bản ghi -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Thêm Xe</h2>
+            <label for="plate">Biển số xe:</label>
+            <input type="text" id="plate" placeholder="VD: 51H-12345">
+            <label for="entryTime">Thời gian vào:</label>
+            <input type="text" id="entryTime" placeholder="VD: 2025-05-10 14:00:00">
+            <label for="exitTime">Thời gian ra (nếu có):</label>
+            <input type="text" id="exitTime" placeholder="VD: 2025-05-10 15:00:00">
+            <button onclick="addVehicle()">Thêm</button>
+            <button class="cancel" onclick="closeAddModal()">Hủy</button>
+        </div>
+    </div>
+
+    <script>
+        let vehiclesData = [];
+
+        async function fetchValidVehicles() {
+            try {
+                const response = await fetch('http://localhost:5000/api/valid_vehicles');
+                const vehicles = await response.json();
+                console.log("Dữ liệu từ API:", vehicles);
+                vehiclesData = vehicles.map(vehicle => ({
+                    ...vehicle,
+                    entry_time: vehicle.entry_time, // Sử dụng entry_time từ API
+                    exit_time: vehicle.exit_time || null
+                }));
+                updateTable();
+            } catch (error) {
+                console.error("Lỗi khi fetch dữ liệu:", error);
+            }
+        }
+
+        function updateTable() {
+            const table = document.getElementById('vehicleTable');
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            vehiclesData.forEach((vehicle, index) => {
+                const row = table.insertRow();
+                row.insertCell(0).innerText = vehicle.plate;
+                const status = vehicle.exit_time ? 'Exit' : 'Entry';
+                row.insertCell(1).innerText = status;
+                const timeText = vehicle.exit_time
+                    ? `In: ${vehicle.entry_time}<br>Out: ${vehicle.exit_time}`
+                    : `In: ${vehicle.entry_time}`;
+                row.insertCell(2).innerHTML = timeText;
+                const checkboxCell = row.insertCell(3);
+                checkboxCell.innerHTML = `<input type="checkbox" class="select-checkbox" data-index="${index}">`;
+            });
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('plate').value = '';
+            document.getElementById('entryTime').value = '';
+            document.getElementById('exitTime').value = '';
+        }
+
+        async function addVehicle() {
+            const plate = document.getElementById('plate').value;
+            const entryTime = document.getElementById('entryTime').value;
+            const exitTime = document.getElementById('exitTime').value || null;
+
+            if (!plate || !entryTime) {
+                alert("Vui lòng nhập biển số và thời gian vào!");
+                return;
+            }
+
+            const newVehicle = {
+                plate: plate,
+                entry_time: entryTime,
+                exit_time: exitTime,
+                valid: true
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/add_vehicle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newVehicle)
+                });
+                if (response.ok) {
+                    vehiclesData.push(newVehicle);
+                    updateTable();
+                    closeAddModal();
+                } else {
+                    alert("Lỗi khi thêm xe!");
+                }
+            } catch (error) {
+                console.error("Lỗi khi thêm xe:", error);
+                alert("Lỗi khi thêm xe!");
+            }
+        }
+
+        async function deleteSelected() {
+            const checkboxes = document.querySelectorAll('.select-checkbox:checked');
+            const indices = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index')));
+            if (indices.length === 0) {
+                alert("Vui lòng chọn ít nhất một xe để xóa!");
+                return;
+            }
+
+            const platesToDelete = indices.map(index => vehiclesData[index].plate);
+            try {
+                const response = await fetch('http://localhost:5000/api/delete_vehicles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ plates: platesToDelete })
+                });
+                if (response.ok) {
+                    vehiclesData = vehiclesData.filter((_, index) => !indices.includes(index));
+                    updateTable();
+                } else {
+                    alert("Lỗi khi xóa xe!");
+                }
+            } catch (error) {
+                console.error("Lỗi khi xóa xe:", error);
+                alert("Lỗi khi xóa xe!");
+            }
+        }
+
+        // Làm mới dữ liệu mỗi 5 giây
+        window.onload = function() {
+            fetchValidVehicles();
+            setInterval(fetchValidVehicles, 5000);
+        };
+    </script>
+</body>
+</html>
