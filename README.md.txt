@@ -19,10 +19,10 @@ smart-parking-system/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── src/
+├── pyDataprocessing/
 │   ├── smart_parking.py
 │   └── app.py
-├── esp32/
+├── esp32-cam/
 │   ├── platformio.ini
 │   ├── src/
 │   │   └── main.cpp
