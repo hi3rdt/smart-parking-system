@@ -15,38 +15,39 @@ This project combines:
 
 ## Project Structure
 The project is organized as follows:
-> smart-parking-system/
-> ├── README.md
-> ├── requirements.txt
-> ├── .gitignore
-> ├── platformio.ini
-> ├── pyDataprocessing/
-> │   ├── smartparking.py
-> │   └── app.py
-> ├── esp32-cam/
-> │   ├── platformio.ini
-> │   ├── src/
-> │   │   └── main.cpp
-> │   └── lib/
-> │       ├── wifi/
-> │       │   ├── wifi.h
-> │       │   └── wifi.cpp
-> │       ├── mqtt/
-> │       │   ├── mqtt.h
-> │       │   └── mqtt.cpp
-> │       ├── camera/
-> │       │   ├── camera.h
-> │       │   └── camera.cpp
-> │       ├── servo/
-> │       │   ├── servo.h
-> │       │   └── servo.cpp
-> │       └── ir/
-> │           ├── ir.h
-> │           └── ir.cpp
-> └── docs/
-> ├── demo.mp4
-> ├── architecture.png
-
+```c
+smart-parking-system/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── platformio.ini
+├── pyDataprocessing/
+│   ├── smartparking.py
+│   └── app.py
+├── esp32-cam/
+│   ├── platformio.ini
+│   ├── src/
+│   │   └── main.cpp
+│   └── lib/
+│       ├── wifi/
+│       │   ├── wifi.h
+│       │   └── wifi.cpp
+│       ├── mqtt/
+│       │   ├── mqtt.h
+│       │   └── mqtt.cpp
+│       ├── camera/
+│       │   ├── camera.h
+│       │   └── camera.cpp
+│       ├── servo/
+│       │   ├── servo.h
+│       │   └── servo.cpp
+│       └── ir/
+│           ├── ir.h
+│           └── ir.cpp
+└── docs/
+├── demo.mp4
+├── architecture.png
+```
 - **`pyDataprocessing/`**: Directory for Python source code.
 - **`esp32-cam/`**: Directory for ESP32-CAM Arduino code and libraries.
 - **`docs/`**: Directory for demo videos and diagrams.
